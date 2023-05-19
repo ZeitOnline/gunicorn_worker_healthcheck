@@ -4,7 +4,9 @@ description = "HTTP endpoint that counts ready gunicorn workers"
 
 dependencies = []
 optional-dependencies = {"test"=[
+    "gunicorn",
     "pytest",
+    "requests",
 ]}
 
 authors = [{name="Zeit Online", email="zon-backend@zeit.de"}]
