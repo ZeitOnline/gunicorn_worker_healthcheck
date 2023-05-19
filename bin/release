@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -e
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+cd $DIR/..
+
+changelog=$(hatch run release:towncrier build --version=draft --draft 2>&1)
+if echo "$changelog" | grep -q "No significant changes"; then
+    echo "No changelog entries exist that could be released"
+    exit 1
+fi
+
+hatch version release
+version=$(hatch version)
+
+hatch run release:towncrier build --version="$version" --yes
+git commit src/**/__init__.py CHANGES.md changelog/ -m "Preparing release: $version"
+git tag "$version"
+
+hatch build
+if [[ -z "$VAULT_TOKEN" ]]; then
+    VAULT_TOKEN=$(<"$HOME/.vault-token")
+fi
+username=$(curl --silent -H "X-Vault-Token: $VAULT_TOKEN" \
+           "${VAULT_ADDR%/}/v1/zon/v1/pypi/zon-backend" | \
+           sed -e 's+^.*"username":"\([^"]*\).*$+\1+')
+password=$(curl --silent -H "X-Vault-Token: $VAULT_TOKEN" \
+                "${VAULT_ADDR%/}/v1/zon/v1/pypi/zon-backend" | \
+               sed -e 's+^.*"password":"\([^"]*\).*$+\1+')
+hatch publish --user "$username" --auth "$password"
+
+hatch version minor
+hatch version dev
+git commit src/**/__init__.py -m "Back to development: $(hatch version)"
+
+rm -rf dist
+
+git push
+git push --tags
