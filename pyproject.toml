@@ -9,7 +9,7 @@ optional-dependencies = {"test"=[
     "requests",
 ]}
 
-authors = [{name="Zeit Online", email="zon-backend@zeit.de"}]
+authors = [{name="Die ZEIT Online Engineering", email="zon-backend@zeit.de"}]
 license = {text="BSD-3-Clause"}
 urls = {repository="https://github.com/ZeitOnline/gunicorn_worker_healthcheck"}
 requires-python = ">=3.7"
