@@ -5,9 +5,6 @@ import logging
 import threading
 
 
-__version__ = '1.1.0.dev0'
-
-
 def start(cfg):
     bind = cfg.get('healthcheck_bind')
     if not bind:

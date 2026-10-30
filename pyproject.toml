@@ -18,14 +18,14 @@ dynamic = ["version", "readme"]
 
 
 [build-system]
-requires = ["hatchling", "hatch-fancy-pypi-readme"]
+requires = ["hatchling", "hatch-fancy-pypi-readme", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-exclude = ["/bin", "/changelog"]
+exclude = ["/bin"]
 
 [tool.hatch.version]
-path = "src/gunicorn_worker_healthcheck/__init__.py"
+source = "vcs"
 
 [tool.hatch.metadata.hooks.fancy-pypi-readme]
 content-type = "text/markdown"
@@ -37,20 +37,3 @@ features = ["test"]
 
 [tool.pytest.ini_options]
 addopts = "--tb=native"
-
-
-[tool.hatch.envs.release]
-skip-install = true
-dependencies = ["towncrier"]
-
-[tool.towncrier]
-directory = "changelog/"
-filename = "CHANGES.md"
-start_string = "<!-- towncrier release notes start -->\n"
-title_format = "## {version} ({project_date})"
-underlines = ["", ""]
-
-[[tool.towncrier.type]]
-directory = "change"
-name = ""
-showcontent = true
